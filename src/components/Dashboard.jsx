@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { calculateFunnel, calculateBudget, calculateHealthScore } from '../utils/calculations';
-import { Download, AlertTriangle, TrendingUp, Users, Target, ShieldAlert, DollarSign, Activity } from 'lucide-react';
+import { Download, AlertTriangle, TrendingUp, Users, Target, ShieldAlert, DollarSign, Activity, Settings, RefreshCw } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 
 const Dashboard = ({ formData, onReset }) => {
@@ -14,9 +14,9 @@ const Dashboard = ({ formData, onReset }) => {
         const element = contentRef.current;
         const opt = {
             margin: 10,
-            filename: 'Biznes-Audit-Natijasi.pdf',
+            filename: 'audit-result.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0f1115' },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#050505' },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
@@ -24,129 +24,168 @@ const Dashboard = ({ formData, onReset }) => {
 
     return (
         <div className="fade-in">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 className="text-gradient">Audit Natijalari</h2>
-                <button className="btn-secondary" onClick={handleDownload} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
-                    <Download size={18} /> PDF Yuklash
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '700', letterSpacing: '-0.025em' }}>Audit Natijasi</h2>
+                <button className="btn-secondary" onClick={handleDownload} style={{ gap: '0.5rem' }}>
+                    <Download size={18} /> Yuklab olish
                 </button>
             </div>
 
-            <div ref={contentRef} style={{ padding: '0.5rem', borderRadius: '16px', background: 'var(--bg-dark)' }}>
+            <div ref={contentRef} style={{ background: 'hsl(var(--background))', borderRadius: 'var(--radius)', color: 'hsl(var(--foreground))' }}>
 
                 {/* Health Score Banner */}
                 <div style={{
-                    background: `linear-gradient(135deg, ${score < 50 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'}, transparent)`,
-                    border: `1px solid ${score < 50 ? 'var(--danger)' : 'var(--success)'}`,
-                    borderRadius: '16px', padding: '1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem'
+                    background: `linear-gradient(135deg, ${score < 50 ? 'hsl(var(--destructive) / 0.1)' : 'hsl(var(--success) / 0.1)'}, transparent)`,
+                    border: `1px solid ${score < 50 ? 'hsl(var(--destructive) / 0.3)' : 'hsl(var(--success) / 0.3)'}`,
+                    borderRadius: 'var(--radius)', padding: '2rem', marginBottom: '2.5rem',
+                    display: 'flex', alignItems: 'center', gap: '2rem', position: 'relative', overflow: 'hidden'
                 }}>
                     <div style={{
-                        width: '80px', height: '80px', borderRadius: '50%', border: `4px solid ${score < 50 ? 'var(--danger)' : 'var(--success)'}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold',
-                        color: score < 50 ? 'var(--danger)' : 'var(--success)', boxShadow: `0 0 20px ${score < 50 ? 'var(--danger-glow)' : 'rgba(16, 185, 129, 0.2)'}`
+                        position: 'absolute', top: '-50%', left: '-10%', width: '150%', height: '200%',
+                        background: `radial-gradient(circle at center, ${score < 50 ? 'hsl(var(--destructive) / 0.1)' : 'hsl(var(--success) / 0.1)'} 0%, transparent 60%)`,
+                        zIndex: 0, pointerEvents: 'none'
+                    }} />
+
+                    <div style={{
+                        width: '90px', height: '90px', borderRadius: '50%', background: 'hsl(var(--background))',
+                        border: `4px solid ${score < 50 ? 'hsl(var(--destructive))' : 'hsl(var(--success))'}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', fontWeight: '800',
+                        color: score < 50 ? 'hsl(var(--destructive))' : 'hsl(var(--success))',
+                        boxShadow: `0 0 30px ${score < 50 ? 'hsl(var(--destructive) / 0.2)' : 'hsl(var(--success) / 0.2)'}`,
+                        zIndex: 1
                     }}>
-                        {score}/100
+                        {score}
                     </div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'white' }}>Biznes Holati Indeksi</h3>
-                        <p className="text-muted" style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}>
-                            {score < 50 ? "Sizning tizimingizda jiddiy kamchiliklar bor. Byudjetingiz havoga ketmoqda." : "Yaxshi holat, lekin mukammallash uchun joy bor."}
+                    <div style={{ zIndex: 1 }}>
+                        <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'hsl(var(--foreground))' }}>Tizim Sog'lomligi</h3>
+                        <p className="text-muted" style={{ marginTop: '0.5rem', fontSize: '1rem', lineHeight: '1.5' }}>
+                            {score < 50 ? "Juda zaif holat. Byudjetning katta qismi jarimalar va yo'qotishlarga ketmoqda." : "Yaxshi holat, biroq tizimni masshtablashda qo'shimcha resurslar talab qilinadi."}
                         </p>
                     </div>
                 </div>
 
                 {/* Core Calculation Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                    <div className="glass-card">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                            <TrendingUp size={20} className="text-success" />
-                            <span>Oylik Daromad Maqsadi</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'hsl(var(--muted-foreground))', fontSize: '0.875rem', fontWeight: '500' }}>
+                            <TrendingUp size={18} className="text-success" />
+                            <span>Kutilayotgan Daromad</span>
                         </div>
-                        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>${formData.revenueGoal.toLocaleString()}</div>
-                        <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--text-muted)' }}>
-                            Kerakli mijozlar: <span style={{ color: 'white', fontWeight: 'bold' }}>{Math.ceil(formData.revenueGoal / formData.avgCheck)} ta</span> (Chek: ${formData.avgCheck})
+                        <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'hsl(var(--foreground))', letterSpacing: '-0.05em' }}>
+                            ${formData.revenueGoal.toLocaleString()}
                         </div>
-                    </div>
-
-                    <div className="glass-card">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                            <Users size={20} className="text-primary" />
-                            <span>Kerakli Lidlar (Sorovlar)</span>
-                        </div>
-                        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{leads} ta</div>
-                        <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--text-muted)' }}>
-                            Sotuv konversiyasi asosida ({formData.conversionRate}%)
+                        <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))', marginTop: 'auto' }}>
+                            Kerakli mijoz: <span style={{ color: 'hsl(var(--foreground))', fontWeight: '600' }}>{Math.ceil(formData.revenueGoal / formData.avgCheck)} ta</span>
                         </div>
                     </div>
 
-                    <div className="glass-card">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                            <Target size={20} className="text-accent" />
-                            <span>Optimal Reklama Byudjeti</span>
+                    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'hsl(var(--muted-foreground))', fontSize: '0.875rem', fontWeight: '500' }}>
+                            <Users size={18} style={{ color: 'hsl(var(--primary))' }} />
+                            <span>Talab Qilingan Lidlar</span>
                         </div>
-                        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>${budget.optimalBudget.toLocaleString()}</div>
-                        <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--text-muted)' }}>
-                            {formData.platform} da 1 ta lid narxi o'rtacha ${budget.baseCPL} (Benchmark)
+                        <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'hsl(var(--foreground))', letterSpacing: '-0.05em' }}>
+                            {leads} <span style={{ fontSize: '1.25rem', fontWeight: '500', color: 'hsl(var(--muted-foreground))' }}>ta</span>
+                        </div>
+                        <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))', marginTop: 'auto' }}>
+                            {formData.conversionRate}% sotuv konversiyasi asosida
+                        </div>
+                    </div>
+
+                    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'hsl(var(--muted-foreground))', fontSize: '0.875rem', fontWeight: '500' }}>
+                            <Target size={18} style={{ color: 'hsl(var(--warning))' }} />
+                            <span>Marketing Byudjeti</span>
+                        </div>
+                        <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'hsl(var(--foreground))', letterSpacing: '-0.05em' }}>
+                            ${budget.optimalBudget.toLocaleString()}
+                        </div>
+                        <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))', marginTop: 'auto' }}>
+                            1 ta lid narxi o'rtacha <span style={{ color: 'hsl(var(--foreground))', fontWeight: '600' }}>${budget.baseCPL}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Losses & Warnings */}
                 {budget.lossAmount > 0 && (
-                    <div className="glass-card" style={{ borderColor: 'var(--danger)', background: 'rgba(239, 68, 68, 0.05)', marginBottom: '2rem' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--danger)' }}>
-                            <AlertTriangle size={24} /> Havoga ketayotgan pullar (Samaradorlik jarimasi)
+                    <div className="glass-card" style={{ borderColor: 'hsl(var(--destructive) / 0.4)', background: 'hsl(var(--destructive) / 0.05)', marginBottom: '3rem' }}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'hsl(var(--destructive))', fontSize: '1.25rem', fontWeight: '600' }}>
+                            <AlertTriangle size={24} />
+                            <span>Tizimdagi Teshiklar Oqibati</span>
                         </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ color: 'var(--text-muted)' }}>Tizimsizlik sababli yo'qotish (oylik):</span>
-                                <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--danger)' }}>+${budget.lossAmount.toLocaleString()} ({budget.penaltyPercentage}%)</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'hsl(var(--background))', borderRadius: 'calc(var(--radius) - 2px)', border: '1px solid hsl(var(--border))' }}>
+                                <span style={{ color: 'hsl(var(--muted-foreground))', fontWeight: '500' }}>Bir oylik havoga uchayotgan pul:</span>
+                                <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'hsl(var(--destructive))' }}>+${budget.lossAmount.toLocaleString()}</span>
                             </div>
-                            <div style={{ height: '1px', background: 'var(--danger)', opacity: 0.2 }} />
 
-                            <ul style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                                {!formData.hasCRM && <li><span className="text-danger">CRM yo'qligi:</span> Mijozlar bazasi yo'qotilmoqda (+20% qimmatroq lid)</li>}
-                                {!formData.hasSalesTeam && <li><span className="text-danger">Sotuv bo'limi yo'qligi:</span> O'zingiz sotayotganingiz uchun konversiya passiv qolib ketmoqda (+20%)</li>}
-                                {formData.socialMediaStatus === "Yomon" && <li><span className="text-warning">Ijtimoiy tarmoq yomon:</span> Trust (ishonch) pastligi sababli lidlarning obunaga o'tish foizi past</li>}
+                            <div style={{ background: 'hsl(var(--border) / 0.5)', height: '1px' }}></div>
+
+                            <ul style={{ color: 'hsl(var(--muted-foreground))', fontSize: '0.95rem', lineHeight: '1.8', display: 'flex', flexDirection: 'column', gap: '1rem', listStyle: 'none' }}>
+                                {!formData.hasCRM && (
+                                    <li style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(var(--destructive))' }}></div>
+                                        <span><strong style={{ color: 'hsl(var(--foreground))' }}>CRM tizimidan foydalanmaslik:</strong> Lidlar yo'qoladi, 20% qimmatroq mijoz jalb qilasiz.</span>
+                                    </li>
+                                )}
+                                {!formData.hasSalesTeam && (
+                                    <li style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(var(--destructive))' }}></div>
+                                        <span><strong style={{ color: 'hsl(var(--foreground))' }}>Sotuv bo'limi yo'qligi:</strong> Operatsion ishlar konversiyani 20% gacha pasaytiradi.</span>
+                                    </li>
+                                )}
+                                {formData.socialMediaStatus === "Yomon" && (
+                                    <li style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(var(--warning))' }}></div>
+                                        <span><strong style={{ color: 'hsl(var(--foreground))' }}>Passiv Ijtimoiy Tarmoq:</strong> Mijoz ishonchi juda past. Lidlar sifatiga salbiy ta'sir ko'rsatadi.</span>
+                                    </li>
+                                )}
                             </ul>
 
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                                * Agar sizda to'liq tizim (CRM + Jamoa) bo'lganida, byudjetingiz atigi <span style={{ color: 'white', fontWeight: 'bold' }}>${budget.cleanBudget.toLocaleString()}</span> bo'lar edi. Siz {budget.penaltyPercentage}% ortiqcha pul sarflayapsiz!
+                            <div style={{ padding: '1rem', background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 'calc(var(--radius) - 2px)', fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))', lineHeight: '1.6' }}>
+                                💡 Agar biznes to'liq avtomatlashtirilganda edi (CRM + Sotuv jamoasi), siz ayni natija uchun <strong style={{ color: 'hsl(var(--foreground))' }}>${budget.optimalBudget.toLocaleString()}</strong> emas, atigi <strong style={{ color: 'hsl(var(--success))' }}>${budget.cleanBudget.toLocaleString()}</strong> sarflagan bo'lar edingiz. Tizimsizlik tufayli reklama narxi <strong style={{ color: 'hsl(var(--destructive))' }}>{budget.penaltyPercentage}%</strong> ga qimmatladi.
                             </div>
                         </div>
                     </div>
                 )}
 
                 {/* Action Plan */}
-                <h3 className="text-gradient" style={{ marginBottom: '1rem', marginTop: '2rem' }}>Ekspert Tavsiyalari</h3>
+                <h3 style={{ marginBottom: '1.5rem', fontSize: '1.25rem', fontWeight: '600' }}>Amaliy Qadamlar</h3>
                 <div style={{ display: 'grid', gap: '1rem' }}>
                     {!formData.hasCRM && (
-                        <div className="glass-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                            <ShieldAlert className="text-accent" style={{ flexShrink: 0 }} />
+                        <div className="glass-card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                            <div style={{ padding: '0.75rem', background: 'hsl(var(--primary) / 0.1)', borderRadius: 'calc(var(--radius) - 2px)' }}>
+                                <Settings size={22} style={{ color: 'hsl(var(--primary))' }} />
+                            </div>
                             <div>
-                                <h4 style={{ color: 'white', marginBottom: '0.5rem' }}>1. Zudlik bilan CRM o'rnating</h4>
-                                <p className="text-muted" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
-                                    AmoCRM yoki Bitrix24 o'rnating. Bu har bir kelgan mijozni tarixini saqlaydi va eslatmalar orqali yo'qotishlarni atigi 1 oy ichida 20% ga kamaytiradi.
+                                <h4 style={{ color: 'hsl(var(--foreground))', marginBottom: '0.5rem', fontSize: '1rem' }}>CRM Tizimini O'rnating</h4>
+                                <p className="text-muted" style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                    AmoCRM yoki Bitrix24 o'rnating. Har bir murojaat e'tibor markazida bo'lishi xarajatni sezilarli darajada tushiradi.
                                 </p>
                             </div>
                         </div>
                     )}
                     {!formData.hasSalesTeam && (
-                        <div className="glass-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                            <Activity className="text-secondary" style={{ flexShrink: 0 }} />
+                        <div className="glass-card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                            <div style={{ padding: '0.75rem', background: 'hsl(var(--secondary) / 0.5)', borderRadius: 'calc(var(--radius) - 2px)' }}>
+                                <Activity size={22} style={{ color: 'hsl(var(--foreground))' }} />
+                            </div>
                             <div>
-                                <h4 style={{ color: 'white', marginBottom: '0.5rem' }}>2. Alohida Sotuv Menejeri yollang</h4>
-                                <p className="text-muted" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
-                                    Rahbar (Siz) o'rniga faqat sotuv ustida ishlaydigan xodim kerak. Skript (sotuv shabloni) yozing, agar xodim qidirish qiyin bo'lsa, avval outsource menejerlardan foydalaning.
+                                <h4 style={{ color: 'hsl(var(--foreground))', marginBottom: '0.5rem', fontSize: '1rem' }}>Alohida Sotuv Menejeri</h4>
+                                <p className="text-muted" style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                    Skript orqali ishlaydigan xodim yoki autsors yordamida sotuvni o'zingizdan uzoqlashtiring.
                                 </p>
                             </div>
                         </div>
                     )}
-                    <div className="glass-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                        <DollarSign className="text-success" style={{ flexShrink: 0 }} />
+                    <div className="glass-card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                        <div style={{ padding: '0.75rem', background: 'hsl(var(--success) / 0.1)', borderRadius: 'calc(var(--radius) - 2px)' }}>
+                            <DollarSign size={22} style={{ color: 'hsl(var(--success))' }} />
+                        </div>
                         <div>
-                            <h4 style={{ color: 'white', marginBottom: '0.5rem' }}>3. Reklamani test byudjet bilan boshlang</h4>
-                            <p className="text-muted" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
-                                Birdaniga ${budget.optimalBudget.toLocaleString()} sarflamang. Oldin 15-20% ({Math.floor(budget.optimalBudget * 0.2)}$) summa bilan 1 haftalik test reklamasi qo'yib, real CPL narxini tasdiqlang.
+                            <h4 style={{ color: 'hsl(var(--foreground))', marginBottom: '0.5rem', fontSize: '1rem' }}>Test Reklama Boshlash</h4>
+                            <p className="text-muted" style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                Optimal byudjetning 20% (<span style={{ color: 'hsl(var(--foreground))', fontWeight: '500' }}>${Math.floor(budget.optimalBudget * 0.2)}</span>) miqdorida test jarayonini boshlab, konversiyangizni tasdiqlab oling.
                             </p>
                         </div>
                     </div>
@@ -154,9 +193,9 @@ const Dashboard = ({ formData, onReset }) => {
 
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
-                <button className="btn-secondary" onClick={onReset} style={{ padding: '0.75rem 2rem' }}>
-                    Yangi Audit Boshlash
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }}>
+                <button className="btn-secondary" onClick={onReset} style={{ gap: '0.5rem', padding: '0 2rem' }}>
+                    <RefreshCw size={16} /> Qaytadan Hisoblash
                 </button>
             </div>
         </div>

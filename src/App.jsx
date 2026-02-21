@@ -41,48 +41,45 @@ const App = () => {
   ];
 
   return (
-    <>
-      <div className="aurora-bg">
-        <div className="aurora-blob aurora-blob-1"></div>
-        <div className="aurora-blob aurora-blob-2"></div>
-        <div className="aurora-blob aurora-blob-3"></div>
+    <div className="container slide-up">
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 className="fade-in" style={{ fontSize: '3rem', fontWeight: '700', letterSpacing: '-0.05em', marginBottom: '0.75rem' }}>
+          Biznes Marketing Auditi
+        </h1>
+        <p className="text-muted fade-in" style={{ fontSize: '1.125rem', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
+          Tizimingizdagi teshiklarni toping va yo'qotishlarni to'xtating.
+          Auditi boshlash orqali daromadingizni oshiring.
+        </p>
       </div>
 
-      <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h1 className="text-gradient" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-            Biznes Marketing Auditi
-          </h1>
-          <p className="text-muted">Tizimingizdagi teshiklarni toping va yo'qotishlarni to'xtating</p>
-        </div>
-
+      <div className="fade-in" style={{ animationDelay: '0.1s' }}>
         <Stepper currentStep={currentStep} steps={steps} />
-
-        <div style={{ marginTop: '1rem' }}>
-          {currentStep === 1 && (
-            <FormStepOne
-              formData={formData}
-              updateParent={updateFormData}
-              onNext={nextStep}
-            />
-          )}
-          {currentStep === 2 && (
-            <FormStepTwo
-              formData={formData}
-              updateParent={updateFormData}
-              onNext={nextStep}
-              onPrev={prevStep}
-            />
-          )}
-          {currentStep === 3 && (
-            <Dashboard
-              formData={formData}
-              onReset={resetAudit}
-            />
-          )}
-        </div>
       </div>
-    </>
+
+      <div style={{ marginTop: '2.5rem' }}>
+        {currentStep === 1 && (
+          <FormStepOne
+            formData={formData}
+            updateParent={updateFormData}
+            onNext={nextStep}
+          />
+        )}
+        {currentStep === 2 && (
+          <FormStepTwo
+            formData={formData}
+            updateParent={updateFormData}
+            onNext={nextStep}
+            onPrev={prevStep}
+          />
+        )}
+        {currentStep === 3 && (
+          <Dashboard
+            formData={formData}
+            onReset={resetAudit}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

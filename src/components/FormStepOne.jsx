@@ -1,12 +1,13 @@
 import React from 'react';
+import { ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 
 const FormStepOne = ({ formData, updateParent, onNext }) => {
     const handleSelect = (field, value) => updateParent(field, value);
 
     return (
-        <div className="glass-card fade-in">
-            <h2 className="text-gradient">Biznesingiz haqida</h2>
-            <p className="text-muted" style={{ marginBottom: '1.5rem', marginTop: '0.5rem' }}>
+        <div className="glass-card slide-up">
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>Biznesingiz haqida</h2>
+            <p className="text-muted" style={{ marginBottom: '2rem', fontSize: '0.95rem' }}>
                 Tahlilni aniqroq qilish uchun quyidagi savollarga javob bering.
             </p>
 
@@ -35,6 +36,7 @@ const FormStepOne = ({ formData, updateParent, onNext }) => {
                             onChange={() => handleSelect('hasCRM', true)}
                         />
                         <div className="card-content">
+                            {formData.hasCRM === true && <CheckCircle2 size={16} className="text-success" style={{ marginRight: '0.5rem' }} />}
                             <span>Ha, bor</span>
                         </div>
                     </label>
@@ -45,8 +47,9 @@ const FormStepOne = ({ formData, updateParent, onNext }) => {
                             checked={formData.hasCRM === false}
                             onChange={() => handleSelect('hasCRM', false)}
                         />
-                        <div className="card-content" style={{ borderColor: formData.hasCRM === false ? 'var(--danger)' : '' }}>
-                            <span className={formData.hasCRM === false ? 'text-danger' : ''}>Yo'q</span>
+                        <div className="card-content">
+                            {formData.hasCRM === false && <XCircle size={16} className="text-danger" style={{ marginRight: '0.5rem' }} />}
+                            <span>Yo'q</span>
                         </div>
                     </label>
                 </div>
@@ -63,7 +66,8 @@ const FormStepOne = ({ formData, updateParent, onNext }) => {
                             onChange={() => handleSelect('hasSalesTeam', true)}
                         />
                         <div className="card-content">
-                            <span>Ha</span>
+                            {formData.hasSalesTeam === true && <CheckCircle2 size={16} className="text-success" style={{ marginRight: '0.5rem' }} />}
+                            <span>Ha, albatta</span>
                         </div>
                     </label>
                     <label className="radio-card">
@@ -73,8 +77,9 @@ const FormStepOne = ({ formData, updateParent, onNext }) => {
                             checked={formData.hasSalesTeam === false}
                             onChange={() => handleSelect('hasSalesTeam', false)}
                         />
-                        <div className="card-content" style={{ borderColor: formData.hasSalesTeam === false ? 'var(--danger)' : '' }}>
-                            <span className={formData.hasSalesTeam === false ? 'text-danger' : ''}>Yo'q, o'zim</span>
+                        <div className="card-content">
+                            {formData.hasSalesTeam === false && <XCircle size={16} className="text-danger" style={{ marginRight: '0.5rem' }} />}
+                            <span>Yo'q, o'zim sotaman</span>
                         </div>
                     </label>
                 </div>
@@ -87,15 +92,15 @@ const FormStepOne = ({ formData, updateParent, onNext }) => {
                     value={formData.socialMediaStatus}
                     onChange={(e) => handleSelect('socialMediaStatus', e.target.value)}
                 >
-                    <option value="Zo'r">Zo'r (Aktiv yuritiladi)</option>
-                    <option value="O'rtacha">O'rtacha</option>
-                    <option value="Yomon">Yomon / Umuman yo'q</option>
+                    <option value="Zo'r">A'lo (Aktiv yuritiladi)</option>
+                    <option value="O'rtacha">O'rtacha (Doimiylik yo'q)</option>
+                    <option value="Yomon">Yomon (Juda sust yoki umuman yo'q)</option>
                 </select>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-                <button className="btn-primary" onClick={onNext}>
-                    Keyingisi →
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2.5rem' }}>
+                <button className="btn-primary" onClick={onNext} style={{ gap: '0.5rem' }}>
+                    Keyingisi <ArrowRight size={18} />
                 </button>
             </div>
         </div>
